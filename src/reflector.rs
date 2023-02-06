@@ -86,6 +86,6 @@ impl Reflector {
                 return self.wiring[i][0];
             }
         }
-        data
+        unreachable!();
     }
 }

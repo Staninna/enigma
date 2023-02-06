@@ -9,10 +9,9 @@ pub enum RotorType {
 }
 
 // A rotor
-#[derive(Copy, Clone)]
 pub struct Rotor {
     notch: char,
-    position: char,
+    pub position: char,
     wiring: [[char; 2]; 26],
 }
 
@@ -22,7 +21,7 @@ impl Rotor {
         match rotor_type {
             RotorType::I => Self {
                 notch: 'y',
-                position: (position + 65) as u8 as char,
+                position: (position + 97) as u8 as char,
                 wiring: [
                     ['a', 'e'],
                     ['b', 'k'],
@@ -54,7 +53,7 @@ impl Rotor {
             },
             RotorType::II => Self {
                 notch: 'm',
-                position: (position + 65) as u8 as char,
+                position: (position + 97) as u8 as char,
                 wiring: [
                     ['a', 'a'],
                     ['b', 'j'],
@@ -86,7 +85,7 @@ impl Rotor {
             },
             RotorType::III => Self {
                 notch: 'd',
-                position: (position + 65) as u8 as char,
+                position: (position + 97) as u8 as char,
                 wiring: [
                     ['a', 'b'],
                     ['b', 'd'],
@@ -118,7 +117,7 @@ impl Rotor {
             },
             RotorType::IV => Self {
                 notch: 'r',
-                position: (position + 65) as u8 as char,
+                position: (position + 97) as u8 as char,
                 wiring: [
                     ['a', 'e'],
                     ['b', 's'],
@@ -150,7 +149,7 @@ impl Rotor {
             },
             RotorType::V => Self {
                 notch: 'h',
-                position: (position + 65) as u8 as char,
+                position: (position + 97) as u8 as char,
                 wiring: [
                     ['a', 'v'],
                     ['b', 'z'],
@@ -183,32 +182,39 @@ impl Rotor {
         }
     }
 
-    // Move data through the rotor forward
-    pub fn forward(&self, input: char) -> char {
-        let mut output = input;
-        for i in 0..26 {
-            if self.wiring[i][0] == input {
-                output = self.wiring[i][1];
+    // Move data forward through the rotor
+    pub fn forward(&self, data: char) -> char {
+        let mut index = 0;
+        for i in self.wiring.iter() {
+            if i[0] == data {
                 break;
             }
+            index += 1;
         }
-        output
+        self.wiring[index][1]
     }
 
-    // Move data through the rotor backward
-    pub fn backward(&self, input: char) -> char {
-        let mut output = input;
-        for i in 0..26 {
-            if self.wiring[i][1] == input {
-                output = self.wiring[i][0];
+    // Move data backwards through the rotor
+    pub fn backward(&self, data: char) -> char {
+        let mut index = 0;
+        for i in self.wiring.iter() {
+            if i[1] == data {
                 break;
             }
+            index += 1;
         }
-        output
+        self.wiring[index][0]
     }
 
     // Rotate the rotor
     pub fn rotate(&mut self) {
+        // Rotate the position
+        self.position = (self.position as u8 + 1) as char;
+        if self.position > 'z' {
+            self.position = 'a';
+        }
+
+        // Rotate the wiring
         let temp = self.wiring[0];
         for i in 0..25 {
             self.wiring[i] = self.wiring[i + 1];

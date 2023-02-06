@@ -10,11 +10,11 @@ pub struct EnigmaMachine {
 
 impl EnigmaMachine {
     // Create a new Enigma machine
-    pub fn new(plugboard: PlugBoard, reflector: Reflector, rotors: Vec<Rotor>) -> Self {
+    pub fn new(plugboard: PlugBoard, reflector: Reflector, rotors: [Rotor; 3]) -> Self {
         Self {
             plugboard,
             reflector,
-            rotors: [rotors[0], rotors[1], rotors[2]],
+            rotors,
         }
     }
 
@@ -96,5 +96,12 @@ impl EnigmaMachine {
         if self.rotors[1].is_notch() {
             self.rotors[2].rotate();
         }
+
+        // Print the rotor positions
+        let mut rotor_positions = String::new();
+        for rotor in &self.rotors {
+            rotor_positions.push(rotor.position);
+        }
+        println!("{}", rotor_positions);
     }
 }
