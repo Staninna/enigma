@@ -1,23 +1,39 @@
-use crate::{input::Input, plug::Plug};
-
-pub struct Plugboard {
-    pub wiring: Vec<Plug>,
+pub struct PlugBoard {
+    plugs: Vec<crate::plug::Plug>,
 }
 
-impl Plugboard {
-    pub fn new(wiring: Vec<Plug>) -> Plugboard {
-        Plugboard { wiring }
+impl PlugBoard {
+    pub fn new() -> Self {
+        Self { plugs: vec![] }
     }
 
-    pub fn forward(&self, input: Input) -> Input {
-        let mut output = input;
-        for plug in &self.wiring {
-            if output == plug.plug1 {
-                output = plug.plug2;
-            } else if output == plug.plug2 {
-                output = plug.plug1;
+    pub fn add_plug(&mut self, plug: crate::plug::Plug) {
+        for p in &self.plugs {
+            if p.contacts[0] == plug.contacts[0] || p.contacts[0] == plug.contacts[1] {
+                panic!(
+                    "Plugboard already has a plug with contact `{}`",
+                    plug.contacts[0]
+                );
+            }
+            if p.contacts[1] == plug.contacts[0] || p.contacts[1] == plug.contacts[1] {
+                panic!(
+                    "Plugboard already has a plug with contact `{}`",
+                    plug.contacts[1]
+                );
             }
         }
-        output
+
+        self.plugs.push(plug);
+    }
+
+    pub fn move_data(&self, data: char) -> char {
+        let mut result = data;
+        for plug in &self.plugs {
+            result = plug.forward(data);
+            if result != data {
+                break;
+            }
+        }
+        result
     }
 }

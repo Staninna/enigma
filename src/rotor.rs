@@ -1,212 +1,3 @@
-use crate::input::Input;
-
-pub struct Rotor {
-    pub position: Input,
-    pub notch: Input,
-    pub wiring: Vec<[Input; 2]>,
-}
-
-impl Rotor {
-    pub fn new(position: u8, rotor_type: RotorType) -> Rotor {
-        match rotor_type {
-            RotorType::I => Rotor {
-                position: Input::from(position),
-                notch: Input::Y,
-                wiring: vec![
-                    [Input::A, Input::E],
-                    [Input::B, Input::K],
-                    [Input::C, Input::M],
-                    [Input::D, Input::F],
-                    [Input::E, Input::L],
-                    [Input::F, Input::G],
-                    [Input::G, Input::D],
-                    [Input::H, Input::Q],
-                    [Input::I, Input::V],
-                    [Input::J, Input::Z],
-                    [Input::K, Input::N],
-                    [Input::L, Input::T],
-                    [Input::M, Input::O],
-                    [Input::N, Input::W],
-                    [Input::O, Input::Y],
-                    [Input::P, Input::H],
-                    [Input::Q, Input::X],
-                    [Input::R, Input::U],
-                    [Input::S, Input::S],
-                    [Input::T, Input::P],
-                    [Input::U, Input::A],
-                    [Input::V, Input::I],
-                    [Input::W, Input::B],
-                    [Input::X, Input::R],
-                    [Input::Y, Input::C],
-                    [Input::Z, Input::J],
-                ],
-            },
-            RotorType::II => Rotor {
-                position: Input::from(position),
-                notch: Input::M,
-                wiring: vec![
-                    [Input::A, Input::A],
-                    [Input::B, Input::J],
-                    [Input::C, Input::D],
-                    [Input::D, Input::K],
-                    [Input::E, Input::S],
-                    [Input::F, Input::I],
-                    [Input::G, Input::R],
-                    [Input::H, Input::U],
-                    [Input::I, Input::X],
-                    [Input::J, Input::B],
-                    [Input::K, Input::L],
-                    [Input::L, Input::H],
-                    [Input::M, Input::W],
-                    [Input::N, Input::T],
-                    [Input::O, Input::M],
-                    [Input::P, Input::C],
-                    [Input::Q, Input::Q],
-                    [Input::R, Input::G],
-                    [Input::S, Input::Z],
-                    [Input::T, Input::N],
-                    [Input::U, Input::P],
-                    [Input::V, Input::Y],
-                    [Input::W, Input::F],
-                    [Input::X, Input::V],
-                    [Input::Y, Input::O],
-                    [Input::Z, Input::E],
-                ],
-            },
-            RotorType::III => Rotor {
-                position: Input::from(position),
-                notch: Input::D,
-                wiring: vec![
-                    [Input::A, Input::B],
-                    [Input::B, Input::D],
-                    [Input::C, Input::F],
-                    [Input::D, Input::H],
-                    [Input::E, Input::J],
-                    [Input::F, Input::L],
-                    [Input::G, Input::C],
-                    [Input::H, Input::P],
-                    [Input::I, Input::R],
-                    [Input::J, Input::T],
-                    [Input::K, Input::X],
-                    [Input::L, Input::V],
-                    [Input::M, Input::Z],
-                    [Input::N, Input::N],
-                    [Input::O, Input::Y],
-                    [Input::P, Input::E],
-                    [Input::Q, Input::I],
-                    [Input::R, Input::W],
-                    [Input::S, Input::G],
-                    [Input::T, Input::A],
-                    [Input::U, Input::K],
-                    [Input::V, Input::M],
-                    [Input::W, Input::U],
-                    [Input::X, Input::S],
-                    [Input::Y, Input::Q],
-                    [Input::Z, Input::O],
-                ],
-            },
-            RotorType::IV => Rotor {
-                position: Input::from(position),
-                notch: Input::R,
-                wiring: vec![
-                    [Input::A, Input::E],
-                    [Input::B, Input::S],
-                    [Input::C, Input::O],
-                    [Input::D, Input::V],
-                    [Input::E, Input::P],
-                    [Input::F, Input::Z],
-                    [Input::G, Input::J],
-                    [Input::H, Input::A],
-                    [Input::I, Input::Y],
-                    [Input::J, Input::Q],
-                    [Input::K, Input::U],
-                    [Input::L, Input::I],
-                    [Input::M, Input::R],
-                    [Input::N, Input::H],
-                    [Input::O, Input::X],
-                    [Input::P, Input::L],
-                    [Input::Q, Input::N],
-                    [Input::R, Input::F],
-                    [Input::S, Input::T],
-                    [Input::T, Input::G],
-                    [Input::U, Input::K],
-                    [Input::V, Input::D],
-                    [Input::W, Input::C],
-                    [Input::X, Input::M],
-                    [Input::Y, Input::W],
-                    [Input::Z, Input::B],
-                ],
-            },
-            RotorType::V => Rotor {
-                position: Input::from(position),
-                notch: Input::K,
-                wiring: vec![
-                    [Input::A, Input::V],
-                    [Input::B, Input::Z],
-                    [Input::C, Input::B],
-                    [Input::D, Input::R],
-                    [Input::E, Input::G],
-                    [Input::F, Input::I],
-                    [Input::G, Input::T],
-                    [Input::H, Input::Y],
-                    [Input::I, Input::U],
-                    [Input::J, Input::P],
-                    [Input::K, Input::S],
-                    [Input::L, Input::D],
-                    [Input::M, Input::N],
-                    [Input::N, Input::H],
-                    [Input::O, Input::L],
-                    [Input::P, Input::X],
-                    [Input::Q, Input::A],
-                    [Input::R, Input::W],
-                    [Input::S, Input::M],
-                    [Input::T, Input::J],
-                    [Input::U, Input::Q],
-                    [Input::V, Input::O],
-                    [Input::W, Input::F],
-                    [Input::X, Input::E],
-                    [Input::Y, Input::C],
-                    [Input::Z, Input::K],
-                ],
-            },
-        }
-    }
-
-    pub fn rotate(&mut self) {
-        self.position = self.position.next();
-    }
-
-    pub fn forward(&self, input: Input) -> Input {
-        let mut index = 0;
-        for i in 0..self.wiring.len() {
-            if self.wiring[i][0] == input {
-                index = i;
-                break;
-            }
-        }
-        let mut output = self.wiring[index][1];
-        for _ in 0..self.position as u8 {
-            output = output.next();
-        }
-        output
-    }
-
-    pub fn backward(&self, input: Input) -> Input {
-        let mut index = 0;
-        for i in 0..self.wiring.len() {
-            if self.wiring[i][1] == input {
-                index = i;
-                break;
-            }
-        }
-        let mut output = self.wiring[index][0];
-        for _ in 0..self.position as u8 {
-            output = output.prev();
-        }
-        output
-    }
-}
-
 #[allow(dead_code)]
 pub enum RotorType {
     I,
@@ -214,4 +5,212 @@ pub enum RotorType {
     III,
     IV,
     V,
+}
+
+#[derive(Copy, Clone)]
+pub struct Rotor {
+    notch: char,
+    position: char,
+    wiring: [[char; 2]; 26],
+}
+
+impl Rotor {
+    pub fn new(rotor_type: RotorType, position: u8) -> Self {
+        match rotor_type {
+            RotorType::I => Self {
+                notch: 'y',
+                position: (position + 65) as u8 as char,
+                wiring: [
+                    ['a', 'e'],
+                    ['b', 'k'],
+                    ['c', 'm'],
+                    ['d', 'f'],
+                    ['e', 'l'],
+                    ['f', 'g'],
+                    ['g', 'd'],
+                    ['h', 'q'],
+                    ['i', 'v'],
+                    ['j', 'z'],
+                    ['k', 'n'],
+                    ['l', 't'],
+                    ['m', 'o'],
+                    ['n', 'w'],
+                    ['o', 'y'],
+                    ['p', 'h'],
+                    ['q', 'x'],
+                    ['r', 'u'],
+                    ['s', 's'],
+                    ['t', 'p'],
+                    ['u', 'a'],
+                    ['v', 'i'],
+                    ['w', 'b'],
+                    ['x', 'r'],
+                    ['y', 'c'],
+                    ['z', 'j'],
+                ],
+            },
+            RotorType::II => Self {
+                notch: 'm',
+                position: (position + 65) as u8 as char,
+                wiring: [
+                    ['a', 'a'],
+                    ['b', 'j'],
+                    ['c', 'd'],
+                    ['d', 'k'],
+                    ['e', 's'],
+                    ['f', 'i'],
+                    ['g', 'r'],
+                    ['h', 'u'],
+                    ['i', 'x'],
+                    ['j', 'b'],
+                    ['k', 'l'],
+                    ['l', 'h'],
+                    ['m', 'w'],
+                    ['n', 't'],
+                    ['o', 'm'],
+                    ['p', 'c'],
+                    ['q', 'q'],
+                    ['r', 'g'],
+                    ['s', 'z'],
+                    ['t', 'n'],
+                    ['u', 'p'],
+                    ['v', 'y'],
+                    ['w', 'f'],
+                    ['x', 'v'],
+                    ['y', 'o'],
+                    ['z', 'e'],
+                ],
+            },
+            RotorType::III => Self {
+                notch: 'd',
+                position: (position + 65) as u8 as char,
+                wiring: [
+                    ['a', 'b'],
+                    ['b', 'd'],
+                    ['c', 'f'],
+                    ['d', 'h'],
+                    ['e', 'j'],
+                    ['f', 'l'],
+                    ['g', 'c'],
+                    ['h', 'p'],
+                    ['i', 'r'],
+                    ['j', 't'],
+                    ['k', 'x'],
+                    ['l', 'v'],
+                    ['m', 'z'],
+                    ['n', 'n'],
+                    ['o', 'y'],
+                    ['p', 'e'],
+                    ['q', 'i'],
+                    ['r', 'w'],
+                    ['s', 'g'],
+                    ['t', 'a'],
+                    ['u', 'k'],
+                    ['v', 'm'],
+                    ['w', 'u'],
+                    ['x', 's'],
+                    ['y', 'q'],
+                    ['z', 'o'],
+                ],
+            },
+            RotorType::IV => Self {
+                notch: 'r',
+                position: (position + 65) as u8 as char,
+                wiring: [
+                    ['a', 'e'],
+                    ['b', 's'],
+                    ['c', 'o'],
+                    ['d', 'v'],
+                    ['e', 'p'],
+                    ['f', 'z'],
+                    ['g', 'j'],
+                    ['h', 'a'],
+                    ['i', 'y'],
+                    ['j', 'q'],
+                    ['k', 'u'],
+                    ['l', 'i'],
+                    ['m', 'r'],
+                    ['n', 'h'],
+                    ['o', 'x'],
+                    ['p', 'l'],
+                    ['q', 'n'],
+                    ['r', 'f'],
+                    ['s', 't'],
+                    ['t', 'g'],
+                    ['u', 'k'],
+                    ['v', 'd'],
+                    ['w', 'c'],
+                    ['x', 'm'],
+                    ['y', 'w'],
+                    ['z', 'b'],
+                ],
+            },
+            RotorType::V => Self {
+                notch: 'h',
+                position: (position + 65) as u8 as char,
+                wiring: [
+                    ['a', 'v'],
+                    ['b', 'z'],
+                    ['c', 'b'],
+                    ['d', 'r'],
+                    ['e', 'g'],
+                    ['f', 'i'],
+                    ['g', 't'],
+                    ['h', 'y'],
+                    ['i', 'u'],
+                    ['j', 'p'],
+                    ['k', 's'],
+                    ['l', 'd'],
+                    ['m', 'n'],
+                    ['n', 'h'],
+                    ['o', 'l'],
+                    ['p', 'x'],
+                    ['q', 'a'],
+                    ['r', 'w'],
+                    ['s', 'm'],
+                    ['t', 'j'],
+                    ['u', 'q'],
+                    ['v', 'o'],
+                    ['w', 'f'],
+                    ['x', 'e'],
+                    ['y', 'c'],
+                    ['z', 'k'],
+                ],
+            },
+        }
+    }
+
+    pub fn forward(&self, input: char) -> char {
+        let mut output = input;
+        for i in 0..26 {
+            if self.wiring[i][0] == input {
+                output = self.wiring[i][1];
+                break;
+            }
+        }
+        output
+    }
+
+    pub fn backward(&self, input: char) -> char {
+        let mut output = input;
+        for i in 0..26 {
+            if self.wiring[i][1] == input {
+                output = self.wiring[i][0];
+                break;
+            }
+        }
+        output
+    }
+
+    pub fn rotate(&mut self) {
+        let temp = self.wiring[0];
+        for i in 0..25 {
+            self.wiring[i] = self.wiring[i + 1];
+        }
+        self.wiring[25] = temp;
+    }
+
+    pub fn is_notch(&self) -> bool {
+        self.position == self.notch
+    }
 }

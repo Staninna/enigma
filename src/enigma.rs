@@ -1,59 +1,63 @@
-use crate::{input::Input, plugboard::Plugboard, reflector::Reflector, rotor::Rotor};
+use crate::{plug::Plug, plugboard::PlugBoard, reflector::Reflector, rotor::Rotor};
 
 pub struct Enigma {
-    rotor1: Rotor,
-    rotor2: Rotor,
-    rotor3: Rotor,
+    plugboard: PlugBoard,
     reflector: Reflector,
-    plugboard: Plugboard,
+    rotors: [Rotor; 3],
 }
 
 impl Enigma {
-    pub fn new(
-        rotor1: Rotor,
-        rotor2: Rotor,
-        rotor3: Rotor,
-        reflector: Reflector,
-        plugboard: Plugboard,
-    ) -> Enigma {
-        Enigma {
-            rotor1,
-            rotor2,
-            rotor3,
-            reflector,
+    pub fn new(plugboard: PlugBoard, reflector: Reflector, rotors: Vec<Rotor>) -> Self {
+        Self {
             plugboard,
+            reflector,
+            rotors: [rotors[0], rotors[1], rotors[2]],
         }
     }
 
-    pub fn input(&mut self, input: Input) -> Input {
-        let mut output = input;
-        output = self.plugboard.forward(output);
+    pub fn add_plug(&mut self, plug: Plug) {
+        self.plugboard.add_plug(plug);
+    }
 
-        output = self.rotor1.forward(output);
-        output = self.rotor2.forward(output);
-        output = self.rotor3.forward(output);
+    pub fn send_string(&mut self, data: &str) -> String {
+        let normalized_data = data.replace(" ", "").to_lowercase();
+        let mut result = String::new();
+        for c in normalized_data.chars() {
+            result.push(self.send(c));
+        }
+        result
+    }
 
-        output = self.reflector.reflect(output);
+    pub fn send(&mut self, data: char) -> char {
+        let mut result = data;
+        result = self.plugboard.move_data(result);
 
-        output = self.rotor3.backward(output);
-        output = self.rotor2.backward(output);
-        output = self.rotor1.backward(output);
+        result = self.rotors[0].forward(result);
+        result = self.rotors[1].forward(result);
+        result = self.rotors[2].forward(result);
 
-        output = self.plugboard.forward(output);
+        result = self.reflector.reflect(result);
+
+        result = self.rotors[2].backward(result);
+        result = self.rotors[1].backward(result);
+        result = self.rotors[0].backward(result);
+
+        result = self.plugboard.move_data(result);
 
         self.rotate();
 
-        output
+        result
     }
 
-    fn rotate(&mut self) -> () {
-        self.rotor1.rotate();
-        if self.rotor1.notch == self.rotor2.notch {
-            self.rotor2.rotate();
+    fn rotate(&mut self) {
+        self.rotors[0].rotate();
+
+        if self.rotors[0].is_notch() {
+            self.rotors[1].rotate();
         }
 
-        if self.rotor2.notch == self.rotor3.notch {
-            self.rotor3.rotate();
+        if self.rotors[1].is_notch() {
+            self.rotors[2].rotate();
         }
     }
 }
