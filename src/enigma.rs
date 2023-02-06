@@ -1,12 +1,15 @@
+// Imports
 use crate::{plug::Plug, plugboard::PlugBoard, reflector::Reflector, rotor::Rotor};
 
-pub struct Enigma {
+// An Enigma machine
+pub struct EnigmaMachine {
     plugboard: PlugBoard,
     reflector: Reflector,
     rotors: [Rotor; 3],
 }
 
-impl Enigma {
+impl EnigmaMachine {
+    // Create a new Enigma machine
     pub fn new(plugboard: PlugBoard, reflector: Reflector, rotors: Vec<Rotor>) -> Self {
         Self {
             plugboard,
@@ -15,12 +18,44 @@ impl Enigma {
         }
     }
 
-    pub fn add_plug(&mut self, plug: Plug) {
-        self.plugboard.add_plug(plug);
+    // Add plugs to the plugboard
+    pub fn add_plugs(&mut self, plugs: &str) {
+        // Normalize plugs
+        let plugs = plugs.replace(" ", "").to_lowercase();
+
+        // Check for invalid plugs
+        for c in plugs.chars() {
+            if !c.is_alphabetic() {
+                panic!("Invalid plug: {}", c);
+            }
+        }
+
+        // Check for even number of plugs
+        if plugs.len() % 2 != 0 {
+            panic!("Plugs must be in pairs");
+        }
+
+        // Check for duplicate plugs
+        let mut plugs = plugs.chars().collect::<Vec<char>>();
+        plugs.sort();
+        for i in 0..plugs.len() - 1 {
+            if plugs[i] == plugs[i + 1] {
+                panic!("Duplicate plug: {}", plugs[i]);
+            }
+        }
+
+        // Add plugs to plugboard
+        for i in 0..plugs.len() / 2 {
+            self.plugboard
+                .add_plug(Plug::new(plugs[i * 2], plugs[i * 2 + 1]));
+        }
     }
 
+    // Encrypt and decrypt a string
     pub fn send_string(&mut self, data: &str) -> String {
-        let normalized_data = data.replace(" ", "").to_lowercase();
+        let mut normalized_data = data.to_string().to_lowercase();
+        normalized_data.retain(|c| c.is_alphabetic());
+
         let mut result = String::new();
         for c in normalized_data.chars() {
             result.push(self.send(c));
@@ -28,7 +63,8 @@ impl Enigma {
         result
     }
 
-    pub fn send(&mut self, data: char) -> char {
+    // Encrypt and decrypt a character
+    fn send(&mut self, data: char) -> char {
         let mut result = data;
         result = self.plugboard.move_data(result);
 
@@ -49,6 +85,7 @@ impl Enigma {
         result
     }
 
+    // Rotate the rotors
     fn rotate(&mut self) {
         self.rotors[0].rotate();
 

@@ -1,19 +1,21 @@
+// Modules
 mod enigma;
 mod plug;
 mod plugboard;
 mod reflector;
 mod rotor;
 
+// Imports
 use crate::{
-    enigma::Enigma,
-    plug::Plug,
+    enigma::EnigmaMachine,
     plugboard::PlugBoard,
     reflector::{Reflector, ReflectorType},
     rotor::{Rotor, RotorType},
 };
 
 fn main() {
-    let mut enigma = Enigma::new(
+    // Create an Enigma machine
+    let mut enigma_machine = EnigmaMachine::new(
         PlugBoard::new(),
         Reflector::new(ReflectorType::B),
         vec![
@@ -23,15 +25,14 @@ fn main() {
         ],
     );
 
-    // Add some random plugs
-    enigma.add_plug(Plug::new('a', 'c'));
-    enigma.add_plug(Plug::new('d', 't'));
-    enigma.add_plug(Plug::new('y', 'u'));
-    enigma.add_plug(Plug::new('i', 'o'));
-    enigma.add_plug(Plug::new('w', 'p'));
-    enigma.add_plug(Plug::new('q', 'r'));
+    // Add some plugs
+    enigma_machine.add_plugs("bu xh qz nf oa");
 
-    let result = enigma.send_string("");
+    // Encrypt and decrypt a string
+    let start = "Hello, World";
+    let result = enigma_machine.send_string(start);
+    let orginal = enigma_machine.send_string(&result);
 
-    println!("{}", result);
+    // Print the results
+    println!("{} -> {} -> {}", start, result, orginal);
 }

@@ -1,14 +1,17 @@
+// All possible reflector types
 #[allow(dead_code)]
 pub enum ReflectorType {
     B,
     C,
 }
 
+// A reflector
 pub struct Reflector {
     wiring: [[char; 2]; 26],
 }
 
 impl Reflector {
+    // Create a new reflector based on given reflector type
     pub fn new(reflector_type: ReflectorType) -> Self {
         match reflector_type {
             ReflectorType::B => Self {
@@ -74,6 +77,7 @@ impl Reflector {
         }
     }
 
+    // Move data through the reflector
     pub fn reflect(&self, data: char) -> char {
         for i in 0..26 {
             if data == self.wiring[i][0] {

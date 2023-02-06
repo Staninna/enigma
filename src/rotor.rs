@@ -1,3 +1,4 @@
+// All possible rotor types
 #[allow(dead_code)]
 pub enum RotorType {
     I,
@@ -7,6 +8,7 @@ pub enum RotorType {
     V,
 }
 
+// A rotor
 #[derive(Copy, Clone)]
 pub struct Rotor {
     notch: char,
@@ -15,6 +17,7 @@ pub struct Rotor {
 }
 
 impl Rotor {
+    // Create a new rotor based on given rotor type and position
     pub fn new(rotor_type: RotorType, position: u8) -> Self {
         match rotor_type {
             RotorType::I => Self {
@@ -180,6 +183,7 @@ impl Rotor {
         }
     }
 
+    // Move data through the rotor forward
     pub fn forward(&self, input: char) -> char {
         let mut output = input;
         for i in 0..26 {
@@ -191,6 +195,7 @@ impl Rotor {
         output
     }
 
+    // Move data through the rotor backward
     pub fn backward(&self, input: char) -> char {
         let mut output = input;
         for i in 0..26 {
@@ -202,6 +207,7 @@ impl Rotor {
         output
     }
 
+    // Rotate the rotor
     pub fn rotate(&mut self) {
         let temp = self.wiring[0];
         for i in 0..25 {
@@ -210,6 +216,7 @@ impl Rotor {
         self.wiring[25] = temp;
     }
 
+    // Check if the rotor is at the notch
     pub fn is_notch(&self) -> bool {
         self.position == self.notch
     }
