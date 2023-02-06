@@ -86,6 +86,6 @@ impl Reflector {
                 return self.wiring[i][0];
             }
         }
-        unreachable!();
+        unreachable!("Invalid data passed to reflector");
     }
 }
