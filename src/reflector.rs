@@ -6,6 +6,7 @@ pub enum ReflectorType {
 }
 
 // A reflector
+#[derive(Clone)]
 pub struct Reflector {
     wiring: [[char; 2]; 26],
 }

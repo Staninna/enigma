@@ -1,3 +1,4 @@
+#[derive(Clone)]
 pub struct Plug {
     pub contacts: [char; 2],
 }
