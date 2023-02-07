@@ -7,16 +7,16 @@ mod rotor;
 
 // Imports
 use crate::{
-    enigma::EnigmaMachine,
+    enigma::EnigmaMachineTemplate as EnigmaMachine,
     plugboard::PlugBoard,
     reflector::{Reflector, ReflectorType},
     rotor::{Rotor, RotorType},
 };
 
 fn main() {
-    // Create an Enigma machine
-    let mut enigma_machine = EnigmaMachine::new(
-        PlugBoard::new(),
+    // Create an Enigma machine config
+    let machine = EnigmaMachine::new(
+        PlugBoard::new("AB CD EF GH IJ KL MN OP QR ST UV WX YZ"),
         Reflector::new(ReflectorType::B),
         [
             Rotor::new(RotorType::I, 10),
@@ -25,12 +25,17 @@ fn main() {
         ],
     );
 
-    // Add some plugs
-    enigma_machine.add_plugs("bu xh qz nf oa mt cg jv ly");
+    // Create an Enigma machine
+    let mut enigma_machine = machine.new_machine();
 
-    // Encrypt and decrypt a string
+    // Encrypt and a string
     let start = "Hello, World!";
     let result = enigma_machine.send_string(start);
+
+    // Create a new Enigma machine
+    let mut enigma_machine = machine.new_machine();
+
+    // Decrypt the result
     let orginal = enigma_machine.send_string(&result);
 
     // Print the results
