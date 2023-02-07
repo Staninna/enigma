@@ -1,5 +1,26 @@
 // Imports
-use crate::{plug::Plug, plugboard::PlugBoard, reflector::Reflector, rotor::Rotor};
+use crate::{plugboard::PlugBoard, reflector::Reflector, rotor::Rotor};
+
+#[derive(Clone)]
+pub struct EnigmaMachineTemplate {
+    pub plugboard: PlugBoard,
+    pub reflector: Reflector,
+    pub rotors: [Rotor; 3],
+}
+
+impl EnigmaMachineTemplate {
+    pub fn new(plugboard: PlugBoard, reflector: Reflector, rotors: [Rotor; 3]) -> Self {
+        Self {
+            plugboard,
+            reflector,
+            rotors,
+        }
+    }
+
+    pub fn new_machine(&self) -> EnigmaMachine {
+        EnigmaMachine::new(self.clone())
+    }
+}
 
 // An Enigma machine
 pub struct EnigmaMachine {
@@ -10,44 +31,11 @@ pub struct EnigmaMachine {
 
 impl EnigmaMachine {
     // Create a new Enigma machine
-    pub fn new(plugboard: PlugBoard, reflector: Reflector, rotors: [Rotor; 3]) -> Self {
+    fn new(config: EnigmaMachineTemplate) -> Self {
         Self {
-            plugboard,
-            reflector,
-            rotors,
-        }
-    }
-
-    // Add plugs to the plugboard
-    pub fn add_plugs(&mut self, plugs: &str) {
-        // Normalize plugs
-        let plugs = plugs.replace(" ", "").to_lowercase();
-
-        // Check for invalid plugs
-        for c in plugs.chars() {
-            if !c.is_alphabetic() {
-                panic!("Invalid plug: {}", c);
-            }
-        }
-
-        // Check for even number of plugs
-        if plugs.len() % 2 != 0 {
-            panic!("Plugs must be in pairs");
-        }
-
-        // Check for duplicate plugs
-        let mut plugs = plugs.chars().collect::<Vec<char>>();
-        plugs.sort();
-        for i in 0..plugs.len() - 1 {
-            if plugs[i] == plugs[i + 1] {
-                panic!("Duplicate plug: {}", plugs[i]);
-            }
-        }
-
-        // Add plugs to plugboard
-        for i in 0..plugs.len() / 2 {
-            self.plugboard
-                .add_plug(Plug::new(plugs[i * 2], plugs[i * 2 + 1]));
+            plugboard: config.plugboard,
+            reflector: config.reflector,
+            rotors: config.rotors,
         }
     }
 
@@ -96,12 +84,5 @@ impl EnigmaMachine {
         if self.rotors[1].is_notch() {
             self.rotors[2].rotate();
         }
-
-        // Print the rotor positions
-        let mut rotor_positions = String::new();
-        for rotor in &self.rotors {
-            rotor_positions.push(rotor.position);
-        }
-        println!("{}", rotor_positions);
     }
 }
