@@ -1,7 +1,9 @@
+use crate::plug::Plug;
+
 // A plugboard
 #[derive(Clone)]
 pub struct PlugBoard {
-    plugs: Vec<crate::plug::Plug>,
+    plugs: Vec<Plug>,
 }
 
 impl PlugBoard {
@@ -25,9 +27,11 @@ impl PlugBoard {
         // Check for duplicate plugs
         let mut plugs = plugs.chars().collect::<Vec<char>>();
         plugs.sort();
-        for i in 0..plugs.len() - 1 {
-            if plugs[i] == plugs[i + 1] {
-                panic!("Duplicate plug: {}", plugs[i]);
+        if plugs.len() > 1 {
+            for i in 0..plugs.len() - 1 {
+                if plugs[i] == plugs[i + 1] {
+                    panic!("Duplicate plug: {}", plugs[i]);
+                }
             }
         }
 
@@ -36,7 +40,7 @@ impl PlugBoard {
         for i in 0..plugs.len() / 2 {
             plugboard
                 .plugs
-                .push(crate::plug::Plug::new(plugs[i * 2], plugs[i * 2 + 1]));
+                .push(Plug::new(plugs[i * 2], plugs[i * 2 + 1]));
         }
         plugboard
     }

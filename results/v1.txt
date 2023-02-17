@@ -1,0 +1,11 @@
+Attempts: 4394000         | Attempts: 4394000
+Message: helloworld       | Message: helloworld
+Time: 43s                 | Time: 42s
+Speed: 102186 attempts/s  | Speed: 104619 attempts/s
+Config: zzz555c           | Config: zzz555c
+--------------------------+--------------------------
+Attempts: 4394000         | Attempts: 4394000
+Message: helloworld       | Message: helloworld
+Time: 41s                 | Time: 40s
+Speed: 107170 attempts/s  | Speed: 109850 attempts/s
+Config: zzz555c           | Config: zzz555c

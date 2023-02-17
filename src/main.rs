@@ -1,3 +1,5 @@
+use crate::enigma::EnigmaMachineState;
+
 // Modules
 mod enigma;
 mod plug;
@@ -5,39 +7,63 @@ mod plugboard;
 mod reflector;
 mod rotor;
 
-// Imports
-use crate::{
-    enigma::EnigmaMachineTemplate as EnigmaMachine,
-    plugboard::PlugBoard,
-    reflector::{Reflector, ReflectorType},
-    rotor::{Rotor, RotorType},
-};
+// Constants
+const MESSAGE: &str = "helloworld";
+const UPDATE_INTERVAL: u64 = 50000;
 
 fn main() {
-    // Create an Enigma machine config
-    let machine = EnigmaMachine::new(
-        PlugBoard::new("AB CD EF GH IJ KL MN OP QR ST UV WX YZ"),
-        Reflector::new(ReflectorType::B),
-        [
-            Rotor::new(RotorType::I, 10),
-            Rotor::new(RotorType::V, 20),
-            Rotor::new(RotorType::IV, 0),
-        ],
+    // Encrypt the message
+    let encrypted = EnigmaMachineState::random()
+        .new_machine()
+        .send_string(MESSAGE);
+
+    // Loop until the message is cracked
+    let mut machine = EnigmaMachineState::default();
+    let mut attempts = 0;
+    let mut cracked;
+    let start = std::time::Instant::now();
+    loop {
+        // Send the message through the machine
+        cracked = machine.new_machine().send_string(&encrypted);
+
+        // Increment the attempts
+        attempts += 1;
+
+        // Update screen
+        if attempts % UPDATE_INTERVAL == 0 {
+            // Print progress
+            clear();
+            println!("Attempts: {}", attempts);
+            println!("Time: {}s            ", start.elapsed().as_secs());
+            println!(
+                "Speed: {} attempts/s      ",
+                attempts / start.elapsed().as_secs().max(1)
+            );
+            println!("{}", machine);
+        }
+
+        // Check if the message is cracked
+        if cracked == MESSAGE {
+            break;
+        }
+
+        // Update the machine
+        machine = machine.next();
+    }
+
+    // Print the message
+    clear();
+    println!("Attempts: {}", attempts);
+    println!("Message: {}", cracked);
+    println!("Time: {}s          ", start.elapsed().as_secs());
+    println!(
+        "Speed: {} attempts/s      ",
+        attempts / start.elapsed().as_secs().max(1)
     );
+    println!("Config: {}", machine);
+}
 
-    // Create an Enigma machine
-    let mut enigma_machine = machine.new_machine();
-
-    // Encrypt and a string
-    let start = "Hello, World!";
-    let result = enigma_machine.send_string(start);
-
-    // Create a new Enigma machine
-    let mut enigma_machine = machine.new_machine();
-
-    // Decrypt the result
-    let orginal = enigma_machine.send_string(&result);
-
-    // Print the results
-    println!("{} -> {} -> {}", start, result, orginal);
+fn clear() {
+    print!("{}[2J", 27 as char);
+    print!("{}[1;1H", 27 as char);
 }

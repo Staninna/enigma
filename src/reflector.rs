@@ -1,13 +1,46 @@
+use std::fmt::Display;
+
 // All possible reflector types
-#[allow(dead_code)]
+#[derive(Clone)]
 pub enum ReflectorType {
     B,
     C,
 }
 
+// Convert a reflector type to a char
+impl From<&ReflectorType> for char {
+    fn from(reflector_type: &ReflectorType) -> Self {
+        match reflector_type {
+            ReflectorType::B => 'b',
+            ReflectorType::C => 'c',
+        }
+    }
+}
+
+// Convert a char to a reflector type
+impl From<char> for ReflectorType {
+    fn from(reflector_type: char) -> Self {
+        match reflector_type {
+            'b' => ReflectorType::B,
+            'c' => ReflectorType::C,
+            _ => panic!("Invalid reflector type"),
+        }
+    }
+}
+
+impl Display for ReflectorType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            ReflectorType::B => write!(f, "b"),
+            ReflectorType::C => write!(f, "c"),
+        }
+    }
+}
+
 // A reflector
 #[derive(Clone)]
 pub struct Reflector {
+    pub reflector_type: ReflectorType,
     wiring: [[char; 2]; 26],
 }
 
@@ -16,6 +49,7 @@ impl Reflector {
     pub fn new(reflector_type: ReflectorType) -> Self {
         match reflector_type {
             ReflectorType::B => Self {
+                reflector_type,
                 wiring: [
                     ['a', 'y'],
                     ['b', 'r'],
@@ -46,6 +80,7 @@ impl Reflector {
                 ],
             },
             ReflectorType::C => Self {
+                reflector_type,
                 wiring: [
                     ['a', 'f'],
                     ['b', 'v'],
@@ -76,6 +111,16 @@ impl Reflector {
                 ],
             },
         }
+    }
+
+    // Create a random reflector
+    pub fn random() -> Self {
+        let reflector_type = match rand::random::<u8>() % 2 {
+            0 => ReflectorType::B,
+            1 => ReflectorType::C,
+            _ => unreachable!(),
+        };
+        Self::new(reflector_type)
     }
 
     // Move data through the reflector
