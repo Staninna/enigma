@@ -25,6 +25,7 @@ impl EnigmaMachineState {
     }
 
     // Default state
+    #[allow(dead_code)]
     pub fn default() -> Self {
         Self {
             plugboard: PlugBoard::new(""),
@@ -46,6 +47,8 @@ impl EnigmaMachineState {
         )
     }
 
+    // Create the maximum state
+    #[allow(dead_code)]
     pub fn max() -> Self {
         Self::new(
             PlugBoard::new(""), // TODO: Can't enumerate the plugboard yet
@@ -78,12 +81,21 @@ impl EnigmaMachineState {
         increment_state(&mut chars);
 
         // Convert the state char array
-        self.from_chars(chars)
+        Self::from_chars(chars)
+    }
+
+    // Given a state index, convert it to a char array
+    pub fn from_index(index: u64) -> Self {
+        // Convert the index to a char array
+        let chars = index_to_chars(index);
+
+        // Convert the char array to a state
+        Self::from_chars(chars)
     }
 
     // TODO: Plugboard
     // Convert the state to a char array
-    pub fn to_chars(&self) -> [char; 7] {
+    fn to_chars(&self) -> [char; 7] {
         let mut result = [0 as char; 7];
         result[0] = self.rotors[0].position;
         result[1] = self.rotors[1].position;
@@ -98,7 +110,7 @@ impl EnigmaMachineState {
 
     // TODO: Plugboard
     // Convert a char array to a state
-    pub fn from_chars(&mut self, chars: [char; 7]) -> Self {
+    fn from_chars(chars: [char; 7]) -> Self {
         Self::new(
             PlugBoard::new(""), // TODO: Can't enumerate the plugboard yet
             Reflector::new(ReflectorType::from(chars[6])),
@@ -198,7 +210,7 @@ impl EnigmaMachine {
     }
 
     // Encrypt and decrypt a string
-    pub fn send_string(&mut self, data: &str) -> String {
+    pub fn send_string(&mut self, data: String) -> String {
         let mut normalized_data = data.to_string().to_lowercase();
         normalized_data.retain(|c| c.is_alphabetic());
 
@@ -243,4 +255,32 @@ impl EnigmaMachine {
             self.rotors[2].rotate();
         }
     }
+}
+
+fn index_to_chars(index: u64) -> [char; 7] {
+    let mut result = [0 as char; 7];
+
+    let mut i = 0;
+    let mut index = index;
+    while i < 3 {
+        let c = char::from_u32((index % 26) as u32 + 97).unwrap_or('a');
+        result[i] = c;
+
+        index /= 26;
+        i += 1;
+    }
+
+    let mut index = index;
+    while i < 6 {
+        let c = char::from_u32((index % 5) as u32 + 49).unwrap_or('1');
+        result[i] = c;
+
+        index /= 5;
+        i += 1;
+    }
+
+    let c = char::from_u32((index % 2) as u32 + 98).unwrap_or('b');
+    result[i] = c;
+
+    result
 }

@@ -1,5 +1,7 @@
 use std::fmt::Display;
 
+const ALPHABET: &str = "abcdefghijklmnopqrstuvwxyz";
+
 // All possible rotor types
 #[derive(Clone)]
 pub enum RotorType {
@@ -128,20 +130,19 @@ impl Rotor {
         // Create the rotor
         Self::new(rotor_type, position)
     }
+
     // Move data forward through the rotor
     pub fn forward(&self, data: char) -> char {
-        let alphabet = "abcdefghijklmnopqrstuvwxyz";
-        let offset = alphabet.find(self.position).unwrap();
-        let alphabet = rotate_alphabet(alphabet, offset);
+        let offset = ALPHABET.find(self.position).unwrap();
+        let alphabet = rotate_alphabet(ALPHABET, offset);
         let position = alphabet.find(data).unwrap();
         self.wires[position]
     }
 
     // Move data backwards through the rotor
     pub fn backward(&self, data: char) -> char {
-        let alphabet = "abcdefghijklmnopqrstuvwxyz";
-        let offset = alphabet.find(self.position).unwrap();
-        let alphabet = rotate_alphabet(alphabet, offset);
+        let offset = ALPHABET.find(self.position).unwrap();
+        let alphabet = rotate_alphabet(ALPHABET, offset);
         let position = self.wires.iter().position(|&x| x == data).unwrap();
         alphabet.chars().nth(position).unwrap()
     }

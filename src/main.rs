@@ -1,4 +1,5 @@
 use crate::enigma::EnigmaMachineState;
+use std::thread;
 
 // Modules
 mod enigma;
@@ -9,61 +10,80 @@ mod rotor;
 
 // Constants
 const MESSAGE: &str = "helloworld";
-const UPDATE_INTERVAL: u64 = 50000;
+const TOTAL_STATES: u64 = 2 * 26 * 26 * 26 * 5 * 5 * 5;
+const TREADS: u64 = 8;
+const TREAD_NAMES: [&str; 8] = [
+    "Wicher", "Jasper", "Vicky", "Stan", "Bart", "Ruben", "Cheryl", "Benjamin",
+];
 
 fn main() {
-    // Encrypt the message
+    // Encrypt the message using a random enigma machine
     let encrypted = EnigmaMachineState::random()
         .new_machine()
-        .send_string(MESSAGE);
+        .send_string(MESSAGE.to_string());
 
-    // Loop until the message is cracked
-    let mut machine = EnigmaMachineState::default();
-    let mut attempts = 0;
-    let mut cracked;
-    let start = std::time::Instant::now();
-    loop {
-        // Send the message through the machine
-        cracked = machine.new_machine().send_string(&encrypted);
-
-        // Increment the attempts
-        attempts += 1;
-
-        // Update screen
-        if attempts % UPDATE_INTERVAL == 0 {
-            // Print progress
-            clear();
-            println!("Attempts: {}", attempts);
-            println!("Time: {}s            ", start.elapsed().as_secs());
-            println!(
-                "Speed: {} attempts/s      ",
-                attempts / start.elapsed().as_secs().max(1)
-            );
-            println!("{}", machine);
-        }
-
-        // Check if the message is cracked
-        if cracked == MESSAGE {
-            break;
-        }
-
-        // Update the machine
-        machine = machine.next();
+    // Create a state for each thread
+    let mut states = Vec::new();
+    for i in 0..TREADS {
+        let start = i * TOTAL_STATES / TREADS;
+        let state = EnigmaMachineState::from_index(start);
+        states.push(state);
     }
 
-    // Print the message
-    clear();
-    println!("Attempts: {}", attempts);
-    println!("Message: {}", cracked);
-    println!("Time: {}s          ", start.elapsed().as_secs());
-    println!(
-        "Speed: {} attempts/s      ",
-        attempts / start.elapsed().as_secs().max(1)
-    );
-    println!("Config: {}", machine);
-}
+    // Create a thread for each state
+    let mut threads = Vec::new();
+    for state in states {
+        // Clone the needed variables
+        let encrypted = encrypted.clone();
+        let mut state = state;
 
-fn clear() {
-    print!("{}[2J", 27 as char);
-    print!("{}[1;1H", 27 as char);
+        // Create the thread
+        let name = TREAD_NAMES[threads.len()];
+        let thread = thread::Builder::new()
+            .name(name.to_string())
+            .spawn(move || {
+                // Initialize the variables
+                let mut decrypted;
+                let mut attempts = 0;
+                let start_time = std::time::Instant::now();
+                let end_time;
+
+                // Loop until the message is cracked
+                loop {
+                    decrypted = state.new_machine().send_string(encrypted.clone());
+                    attempts += 1;
+                    if decrypted == MESSAGE {
+                        end_time = std::time::Instant::now();
+                        break;
+                    } else {
+                        state = state.next();
+                    }
+                }
+
+                // Print the results
+                println!(
+                    "Sultion found on thread: {}",
+                    std::thread::current().name().unwrap()
+                );
+                println!("Decrypted: {}", decrypted);
+                println!("Configuration: {}", state);
+                println!("Time: {:?}", end_time - start_time);
+                println!("Attempts: {}", attempts);
+                println!(
+                    "Attempts per second: {}",
+                    attempts as f64 / (end_time - start_time).as_secs_f64()
+                );
+
+                // Return the all the needed variables
+                std::process::exit(0);
+            })
+            .unwrap();
+
+        threads.push(thread);
+    }
+
+    // Wait for all threads to finish
+    for thread in threads {
+        thread.join().unwrap();
+    }
 }
