@@ -83,7 +83,8 @@ fn main() {
     }
 
     // Wait for all threads to finish
+    #[allow(unused_must_use)]
     for thread in threads {
-        thread.join().unwrap();
+        thread.join();
     }
 }
