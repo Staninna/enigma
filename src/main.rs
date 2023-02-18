@@ -74,7 +74,7 @@ fn main() {
                     attempts as f64 / (end_time - start_time).as_secs_f64()
                 );
 
-                // Return the all the needed variables
+                // Exit the program to prevent the other threads from running
                 std::process::exit(0);
             })
             .unwrap();
