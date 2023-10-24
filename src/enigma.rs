@@ -15,7 +15,6 @@ pub struct EnigmaMachineState {
 
 impl EnigmaMachineState {
     // Create a new machine state
-    #[allow(dead_code)]
     pub fn new(plugboard: PlugBoard, reflector: Reflector, rotors: [Rotor; 3]) -> Self {
         Self {
             plugboard,
@@ -48,7 +47,6 @@ impl EnigmaMachineState {
     }
 
     // Create the maximum state
-    #[allow(dead_code)]
     pub fn max() -> Self {
         Self::new(
             PlugBoard::new(""), // TODO: Can't enumerate the plugboard yet
@@ -62,7 +60,6 @@ impl EnigmaMachineState {
     }
 
     // Create a random machine state
-    #[allow(dead_code)]
     pub fn random() -> Self {
         Self {
             plugboard: PlugBoard::new(""), // TODO: Can't enumerate the plugboard yet
@@ -72,7 +69,6 @@ impl EnigmaMachineState {
     }
 
     // Increment the state
-    #[allow(dead_code)]
     pub fn next(&mut self) -> Self {
         // Convert the state char array
         let mut chars = self.to_chars();
