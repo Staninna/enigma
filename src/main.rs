@@ -13,7 +13,7 @@ const MESSAGE: &str = "helloworld";
 const TOTAL_STATES: u64 = 2 * 26 * 26 * 26 * 5 * 5 * 5;
 const TREADS: u64 = 8;
 const TREAD_NAMES: [&str; 8] = [
-    "Wicher", "Jasper", "Vicky", "Stan", "Bart", "Ruben", "Cheryl", "Benjamin",
+    "Jonh", "Paul", "George", "Ringo", "Freddie", "Brian", "Roger", "Hendrix",
 ];
 
 fn main() {
