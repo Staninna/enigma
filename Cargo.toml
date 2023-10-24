@@ -10,5 +10,6 @@ rand = "0.8"
 
 # Hyper optimize for speed
 [profile.release]
+codegen-units = 1
 opt-level = 3
 lto = true
